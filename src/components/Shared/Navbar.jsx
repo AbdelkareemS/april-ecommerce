@@ -6,18 +6,22 @@ import { MailIcon, ShoppingCartIcon } from "@heroicons/react/outline";
 const Navbar = () => {
   return (
     <>
-      <div className="nav px-4 font-AlmaraiBold">
+      <div className="nav px-0 sm:px-4 font-AlmaraiBold">
         <div className="container">
-          <div className="flex flex-row-reverse justify-between">
-            <section className="flex flex-row-reverse text-sm">
-              <div className="p-3 bg-red-100">تسجيل الدخول</div>
-              <div className="p-3 bg-red-100">حساب جديد</div>
+          <div className="flex flex-row-reverse justify-center sm:justify-between flex-wrap">
+            <section className="flex flex-row-reverse flex-wrap text-sm justify-center">
+              <div className="p-3 bg-red-100">
+                <Link to="/login">تسجيل الدخول</Link>
+              </div>
+              <div className="p-3 bg-red-100">
+                <Link to="/signup">حساب جديد</Link>
+              </div>
               <div className="p-3">
                 <Link to="/">الرئيسية</Link>
               </div>
               <div className="p-3 flex flex-row-reverse justify-center items-center">
                 <div className="pl-1">المفضلات</div>
-                <div className="bg-pink-500 rounded-full text-center text-white text-xs w-4 h-4">
+                <div className="bg-pinkish rounded-full text-center text-white text-xs w-4 h-4">
                   2
                 </div>
               </div>
@@ -34,20 +38,22 @@ const Navbar = () => {
 
       <div className="bg-gray-100 p-6 font-AlmaraiBold">
         <div className="container">
-          <div className="flex flex-row-reverse justify-between">
-            <div className="right flex flex-row-reverse gap-x-3 text-sm items-center">
-              <img src={Logo} alt="Logo" />
-              <div className="px-5 active:font-AlmaraiExtraBold">
+          <div className="flex flex-row-reverse justify-between flex-wrap">
+            <div className="right flex flex-row-reverse gap-x-3 text-sm items-center flex-wrap">
+              <Link to="/">
+                <img src={Logo} alt="Logo" />
+              </Link>
+              <div className="p-5 active:font-AlmaraiExtraBold">
                 <Link to="/products">العروض</Link>
               </div>
-              <div className="px-5 active:font-AlmaraiExtraBold">فساتين</div>
-              <div className="px-5 active:font-AlmaraiExtraBold">
+              <div className="p-5 active:font-AlmaraiExtraBold">فساتين</div>
+              <div className="p-5 active:font-AlmaraiExtraBold">
                 موديلات ملابس
               </div>
-              <div className="px-5 active:font-AlmaraiExtraBold">عبايات</div>
-              <div className="px-5 active:font-AlmaraiExtraBold">اكسسوارات</div>
+              <div className="p-5 active:font-AlmaraiExtraBold">عبايات</div>
+              <div className="p-5 active:font-AlmaraiExtraBold">اكسسوارات</div>
             </div>
-            <div className="left flex flex-row-reverse gap-x-3 text-sm items-center">
+            <div className="left flex flex-row-reverse gap-x-3 text-sm items-center flex-wrap">
               <SearchIcon className="h-5 w-5" />
               <MailIcon className="h-5 w-5 text-pink-400" />
               <div className="flex flex-col items-end">
