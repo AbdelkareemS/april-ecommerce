@@ -1,3 +1,4 @@
+import React from "react";
 import footerLogo from "../../assets/photos/footer-logo.png";
 
 const Login = () => {

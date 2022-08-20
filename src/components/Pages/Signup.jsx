@@ -1,7 +1,27 @@
+import React from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import footerLogo from "../../assets/photos/footer-logo.png";
 
 const Signup = () => {
+  // const userRef = useRef();
+  // const errRef = useRef();
+
+  // const [user, setUser] = useState("");
+  // const [validName, setValidName] = useState(false);
+  // const [userFocus, setUserFocus] = useState(false);
+
+  // const [pwd, setPwd] = useState("");
+  // const [validPwd, setValidPwd] = useState(false);
+  // const [userPwd, setPwdFocus] = useState(false);
+
+  // const [errMsg, setErrMsg] = useState("");
+  // const [success, setSuccess] = useState(false);
+
+  // useEffect(() => {
+  //   useRef.current.focus();
+  // }, []);
+
   return (
     <>
       <section className="Signup container my-20 p-4">

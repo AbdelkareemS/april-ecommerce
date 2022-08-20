@@ -1,3 +1,4 @@
+import React from "react";
 import Logo from "../../assets/photos/logo.png";
 import { Link } from "react-router-dom";
 import { SearchIcon } from "@heroicons/react/solid";

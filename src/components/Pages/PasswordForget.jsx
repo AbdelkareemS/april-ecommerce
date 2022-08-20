@@ -1,0 +1,59 @@
+import React from "react";
+// import { Link } from "react-router-dom";
+import footerLogo from "../../assets/photos/footer-logo.png";
+import resetPassword from "../../assets/photos/resetpassword.png";
+
+const PasswordForget = () => {
+  return (
+    <>
+      <section className="PasswordForget container my-20 p-4">
+        <div className="flex flex-row flex-grow flex-wrap justify-center bg-gray-100 bg-no-repeat rounded-2xl overflow-hidden">
+          <div className="pic bg-[url('./assets/photos/IMG3.png')] basis-1/2 lg:flex justify-center items-center hidden">
+            <img src={footerLogo} alt="" />
+          </div>
+          <div className="form flex flex-col flex-wrap p-10 lg:py-20 lg:px-20 xl:px-40 lg:basis-1/2 items-center lg:items-end">
+            <img src={resetPassword} alt="" />
+            <h2 className="font-AlmaraiBold text-3xl lg:text-5xl mb-7 text-right my-10">
+              نسيت كلمة السر
+            </h2>
+            <p className="text-md lg:text-2xl lg:text-right mb-10 text-right">
+              يمكنك استرجاعها بسهولة من خلال تأكيد بريدك الالكتروني او عبر رسالة
+              علي الهاتف
+            </p>
+            <form
+              action=""
+              className="flex flex-col gap-2 text-right container mb-8"
+            >
+              <input
+                type="email"
+                name=""
+                id=""
+                placeholder="البريد الالكتروني"
+                className="mb-4 rounded-xl p-4 text-right drop-shadow"
+              />
+              <div className="divider flex flex-row justify-center items-center my-2">
+                <hr className="w-[45%]" />
+                <p className="text-[#BEBEBE] text-center w-[10%]">أو</p>
+                <hr className="w-[45%]" />
+              </div>
+              <input
+                type="phone"
+                name=""
+                id=""
+                placeholder="رقم الهاتف"
+                className="my-4 rounded-xl p-4 text-right drop-shadow"
+              />
+              <input
+                type="submit"
+                value="تاكيد"
+                className="font-AlmaraiBold bg-red-100 py-3 px-4 basis-1/2 rounded-2xl pt mb-7"
+              />
+            </form>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default PasswordForget;

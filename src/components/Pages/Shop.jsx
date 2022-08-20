@@ -1,3 +1,4 @@
+import React from "react";
 import { SearchIcon, StarIcon } from "@heroicons/react/solid";
 import Card from "../Shared/Card";
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { MailIcon } from "@heroicons/react/outline";
 import footerLogo from "../../assets/photos/footer-logo.png";
 import masterCard from "../../assets/photos/MasterCard.png";
