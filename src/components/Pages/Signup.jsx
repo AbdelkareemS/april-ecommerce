@@ -6,234 +6,246 @@ import footerLogo from "../../assets/photos/footer-logo.png";
 import Login from "./Login";
 import axios from "../../api/axios";
 
-const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,23}$/;
+// const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
+// const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,23}$/;
 const REGISTER_URL = "/auth/register";
 
 const Signup = () => {
-  const userRef = useRef();
-  const errRef = useRef();
+  const initialValues = {
+    username: "",
+    password: "",
+    matchPassword: "",
+    email: "",
+    phone: "",
+    registerType: "normal",
+  };
 
-  const [user, setUser] = useState("");
-  const [validName, setValidName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false);
-
-  const [email, setEmail] = useState("");
-  // const [validEmail, setValidEmail] = useState(false);
-  const [emailFocus, setEmailFocus] = useState(false);
-
-  const [pwd, setPwd] = useState("");
-  const [validPwd, setValidPwd] = useState(false);
-  const [pwdFocus, setPwdFocus] = useState(false);
-
-  const [matchPwd, setMatchPwd] = useState("");
-  const [validMatchPwd, setValidMatch] = useState(false);
-  const [matchFocus, setMatchFocus] = useState(false);
-
-  const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
-    userRef.current.focus();
-  }, []);
+    // Update the document title using the browser API
+    document.title = `التسجيل`;
+  });
 
-  useEffect(() => {
-    const result = USER_REGEX.test(user);
-    console.log(result);
-    console.log(user);
-    setValidName(result);
-  }, [user]);
+  // useEffect(() => {
+  //   // Match Password Validation
+  //   formValues.password === formValues.matchPassword &&
+  //   formValues.password !== "" &&
+  //   formValues.matchPassword !== ""
+  //     ? setSubmitLock(false)
+  //     : setSubmitLock(true);
+  // }, [formValues.password, formValues.matchPassword]);
 
-  useEffect(() => {
-    const result = PWD_REGEX.test(pwd);
-    console.log(result);
-    console.log(pwd);
-    setValidPwd(result);
-    const match = pwd === matchPwd;
-    setValidMatch(match);
-  }, [pwd, matchPwd]);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [user, pwd, matchPwd]);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+    console.log(formValues);
+  };
 
   const handleSubmit = async (e) => {
+    // Handle Submitting Form
     e.preventDefault();
-    const v1 = USER_REGEX.test(user);
-    const v2 = PWD_REGEX.test(pwd);
-    if (!v1 || !v2) {
-      setErrMsg("Invalid Entry");
-      return;
-    }
-    try {
-      const response = await axios.post(
-        REGISTER_URL,
-        JSON.stringify({ name: user, password: pwd }),
-        {
-          headers: { "content-Type": "application/json" },
-          withCredentials: true,
+    await axios
+      .post("/auth/register", {
+        name: formValues.username,
+        email: formValues.email,
+        phone: formValues.phone,
+        password: formValues.password,
+        password_confirmation: formValues.matchPassword,
+        register_type: formValues.registerType,
+      })
+      .then((res) => {
+        if (res.statusText == "OK") {
+          window.location = "/verify";
         }
-      );
-      console.log("response.data", response.data);
-      console.log("response.accessToken", response.accessToken);
-      console.log("response string", JSON.stringify(response));
-      setSuccess(true);
-      // clear input fields
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response?.status === 490) {
-        setErrMsg("user");
-      } else {
-        setErrMsg("Registration Failed");
-      }
-      // errRef.current.focus();
-    }
-
-    console.log(user, pwd);
-    setSuccess(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.data.message === "validation.full_name_min") {
+          console.log("err.response.data", err.response.data.message);
+          setFormErrors({
+            ...formErrors,
+            username: "اسم المستخدم يجب ان يكون اكثر من 4 احرف",
+          });
+        }
+        if (err.response.data.message === "validation.phone") {
+          console.log("err.response.data", err.response.data.message);
+          setFormErrors({
+            ...formErrors,
+            phone: "خطأ في رقم الهاتف",
+          });
+        }
+      });
   };
+
+  // const validate = (values) => {
+  //   const errors = {};
+  //   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!values.username) {
+  //     errors.username = "يجب ادخال اسم المستخدم";
+  //   }
+  //   if (!values.email) {
+  //     errors.email = "يجب ادخال الأيميل الخاص";
+  //   } else if (!EMAIL_REGEX.test(values.email)) {
+  //     errors.email = "هذا الأيميل غير مطابق";
+  //   }
+  //   if (!values.phone) {
+  //     errors.phone = "يجب ادخال رقم الهاتف الخاص بكم";
+  //   }
+  //   if (!values.password) {
+  //     errors.password = "يجب ادخال كلمة السر";
+  //   } else if (values.password < 7) {
+  //     errors.email = "كلمة السر يجب ان تكون اكثر من 7 ارقام";
+  //   }
+  //   if (values.password !== values.matchPassword) {
+  //     errors.matchPassword = "كلمة السر غير مطابقة";
+  //   }
+  //   return errors;
+  // };
 
   return (
     <>
-      {success ? (
-        <Login />
-      ) : (
-        <section className="Signup container my-20 p-4">
-          <div className="flex flex-row flex-grow flex-wrap justify-center bg-gray-100 bg-no-repeat rounded-2xl overflow-hidden">
-            <div className="pic bg-[url('./assets/photos/IMG2.png')] basis-1/2 lg:flex justify-center items-center hidden">
-              <img src={footerLogo} alt="" />
-            </div>
-            <div className="form flex flex-col flex-wrap p-10 lg:py-20 lg:px-20 xl:px-40 lg:basis-1/2 items-center lg:items-end">
-              <h2 className="font-AlmaraiBold text-3xl lg:text-5xl mb-7 text-center">
-                حساب جديد
-              </h2>
-              <p className="text-md lg:text-2xl lg:text-right mb-7 text-center">
-                موقع يضم احدث التشكيلات المناسبة لكي ومن اختيار اشهر المصممين
-              </p>
-              {/* <p
+      <section className="Signup container my-20 p-4">
+        <div className="flex flex-row flex-grow flex-wrap justify-center bg-gray-100 bg-no-repeat rounded-2xl overflow-hidden">
+          <div className="pic bg-[url('./assets/photos/IMG2.png')] basis-1/2 lg:flex justify-center items-center hidden">
+            <img src={footerLogo} alt="" />
+          </div>
+          <div className="form flex flex-col flex-wrap p-10 lg:py-20 lg:px-20 xl:px-40 lg:basis-1/2 items-center lg:items-end">
+            <h2 className="font-AlmaraiBold text-3xl lg:text-5xl mb-7 text-center">
+              حساب جديد
+            </h2>
+            <p className="text-md lg:text-2xl lg:text-right mb-7 text-center">
+              موقع يضم احدث التشكيلات المناسبة لكي ومن اختيار اشهر المصممين
+            </p>
+            {/* <p
               ref={errRef}
               className={errMsg ? "flex" : "hidden"}
               aria-live="assertive"
             >
               {errMsg}
             </p> */}
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-2 text-right container mb-8"
+            <form className="flex flex-col gap-2 text-right container mb-8">
+              <input
+                type="text"
+                name="username"
+                id="username"
+                autoComplete="off"
+                onChange={handleChange}
+                required
+                aria-describedby="uidnote"
+                value={formValues.username}
+                placeholder="أسم المستخدم"
+                className="mb-2 rounded-xl p-4 text-right drop-shadow bg-[#C36FA3] text-white"
+              />
+              <p
+                id="uidnote"
+                className={`${
+                  formErrors.username ? "flex" : "hidden"
+                } flex-row-reverse bg-red-300 rounded-lg p-2 text-red-700 text-sm border-[1px] border-red-700`}
               >
-                <input
-                  type="text"
-                  name=""
-                  id="username"
-                  ref={userRef}
-                  autoComplete="off"
-                  onChange={(e) => setUser(e.target.value)}
-                  required
-                  aria-invalid={validName ? "false" : "true"}
-                  aria-describedby="uidnote"
-                  onFocus={() => setUserFocus(true)}
-                  onBlur={() => setUserFocus(false)}
-                  placeholder="أسم المستخدم"
-                  className="mb-2 rounded-xl p-4 text-right drop-shadow bg-[#C36FA3] text-white"
-                />
-                <p
-                  id="uidnote"
-                  className={
-                    userFocus && user && !validName ? "flex" : "hidden"
-                  }
-                >
-                  <PencilIcon className="h-5 w-5" />
-                  bla bla blaaaaaaa
-                </p>
-                <input
-                  type="email"
-                  name=""
-                  id="email"
-                  onFocus={() => setEmailFocus(true)}
-                  onBlur={() => setEmailFocus(false)}
-                  placeholder="البريد الالكتروني"
-                  className="mb-2 rounded-xl p-4 text-right drop-shadow"
-                />
-                <input
-                  type="phone"
-                  name=""
-                  id=""
-                  placeholder="رقم الهاتف"
-                  className="mb-2 rounded-xl p-4 text-right drop-shadow"
-                />
-                <input
-                  type="password"
-                  name=""
-                  id="password"
-                  required
-                  aria-invalid={validPwd ? "false" : "true"}
-                  aria-describedby="pwdnote"
-                  onChange={(e) => setPwd(e.target.value)}
-                  onFocus={() => setPwdFocus(true)}
-                  onBlur={() => setPwdFocus(false)}
-                  placeholder="كلمة السر"
-                  className="mb-7 rounded-xl p-4 text-right drop-shadow"
-                />
-                <p
-                  id="pwdnote"
-                  className={pwdFocus && pwd && !validPwd ? "flex" : "hidden"}
-                >
-                  <PencilIcon className="h-5 w-5" />
-                  8 to 24 characters. <br />
-                  must include uppercase and lowercase letters, a number and a
-                  spacial character. <br />
-                </p>
-                <input
-                  type="password"
-                  name=""
-                  id="confirm_pwd"
-                  required
-                  aria-invalid={validMatchPwd ? "false" : "true"}
-                  aria-describedby="confirmnote"
-                  onChange={(e) => setMatchPwd(e.target.value)}
-                  onFocus={() => setMatchFocus(true)}
-                  onBlur={() => setMatchFocus(false)}
-                  placeholder="تأكيد كلمة السر"
-                  className="mb-7 rounded-xl p-4 text-right drop-shadow"
-                />
-                <p
-                  id="confirmnote"
-                  className={matchFocus && !validMatchPwd ? "flex" : "hidden"}
-                >
-                  <PencilIcon className="h-5 w-5" />
-                  must match the first password input field
-                </p>
-                <input
-                  type="submit"
-                  value="تسجيل الحساب"
-                  disabled={
-                    !validName || !validPwd || !validMatchPwd ? true : false
-                  }
-                  className="font-AlmaraiBold bg-red-100 py-3 px-4 basis-1/2 rounded-2xl pt mb-7 cursor-pointer"
-                />
-                <p className="font-AlmaraiBold text-sm lg:text-md text-center lg:text-right mb-5">
-                  أو أنشئ حساب جديد باستخدام وسائل التواصل الأجتماعي
-                </p>
-                <div className="social-btns flex flex-row gap-2 justify-end">
-                  <button className="text-white bg-facebook py-3 px-4 basis-1/2 rounded-2xl">
-                    facebook
-                  </button>
-                  <button className="text-white bg-gmail py-3 px-4 basis-1/2 rounded-2xl pt">
-                    Gmail
-                  </button>
-                </div>
-              </form>
-              <p className="mt-2 text-sm lg:text-md text-center lg:text-right">
-                لديك حساب بالفعل ؟ يمكنك
-                <span className="text-goblinGreen">
-                  <Link to="/login"> تسجيل الدخول</Link>
-                </span>
+                <PencilIcon className="h-5 w-5 mx-2" />
+                {formErrors.username}
               </p>
-            </div>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                onChange={handleChange}
+                value={formValues.email}
+                placeholder="البريد الالكتروني"
+                className="mb-2 rounded-xl p-4 text-right drop-shadow"
+              />
+              <p
+                className={`${
+                  formErrors.email ? "flex" : "hidden"
+                } flex-row-reverse bg-red-300 rounded-lg p-2 text-red-700 text-sm border-[1px] border-red-700`}
+              >
+                <PencilIcon className="h-5 w-5 mx-2" />
+                {formErrors.email}
+              </p>
+              <input
+                type="phone"
+                name="phone"
+                id=""
+                onChange={handleChange}
+                placeholder="رقم الهاتف"
+                value={formValues.phone}
+                className="mb-2 rounded-xl p-4 text-right drop-shadow"
+              />
+              <p
+                className={`${
+                  formErrors.phone ? "flex" : "hidden"
+                } flex-row-reverse bg-red-300 rounded-lg p-2 text-red-700 text-sm border-[1px] border-red-700`}
+              >
+                <PencilIcon className="h-5 w-5 mx-2" />
+                {formErrors.phone}
+              </p>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                aria-describedby="pwdnote"
+                onChange={handleChange}
+                value={formValues.password}
+                placeholder="كلمة السر"
+                className="mb-2 rounded-xl p-4 text-right drop-shadow"
+              />
+              <p
+                className={`${
+                  formErrors.password ? "flex" : "hidden"
+                } flex-row-reverse bg-red-300 rounded-lg p-2 text-red-700 text-sm border-[1px] border-red-700`}
+              >
+                <PencilIcon className="h-5 w-5 mx-2" />
+                {formErrors.password}
+              </p>
+              <input
+                type="password"
+                name="matchPassword"
+                id="confirm_pwd"
+                required
+                onChange={handleChange}
+                value={formValues.matchPassword}
+                placeholder="تأكيد كلمة السر"
+                className="mb-7 rounded-xl p-4 text-right drop-shadow"
+              />
+              <p
+                id="uidnote"
+                className={`${
+                  formErrors.matchPassword ? "flex" : "hidden"
+                } flex-row-reverse bg-red-300 rounded-lg p-2 text-red-700 text-sm border-[1px] border-red-700`}
+              >
+                <PencilIcon className="h-5 w-5 mx-2" />
+                {formErrors.matchPassword}
+              </p>
+              <input
+                type="submit"
+                value="تسجيل الحساب"
+                onClick={handleSubmit}
+                className={`font-AlmaraiBold bg-red-100 py-3 px-4 basis-1/2 rounded-2xl pt mb-7 cursor-pointer`}
+              />
+              <p className="font-AlmaraiBold text-sm lg:text-md text-center lg:text-right mb-5">
+                أو أنشئ حساب جديد باستخدام وسائل التواصل الأجتماعي
+              </p>
+              <div className="social-btns flex flex-row gap-2 justify-end">
+                <button className="text-white bg-facebook py-3 px-4 basis-1/2 rounded-2xl">
+                  facebook
+                </button>
+                <button className="text-white bg-gmail py-3 px-4 basis-1/2 rounded-2xl pt">
+                  Gmail
+                </button>
+              </div>
+            </form>
+            <p className="mt-2 text-sm lg:text-md text-center lg:text-right">
+              لديك حساب بالفعل ؟ يمكنك
+              <span className="text-goblinGreen">
+                <Link to="/login"> تسجيل الدخول</Link>
+              </span>
+            </p>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </>
   );
 };

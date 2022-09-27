@@ -1,8 +1,19 @@
 import React from "react";
 import { SearchIcon, StarIcon } from "@heroicons/react/solid";
 import Card from "../Shared/Card";
+import axios from "../../api/axios";
+import { useEffect } from "react";
 
 const Shop = () => {
+  useEffect(() => {
+    async function getItmes() {
+      await axios
+        .get("/products/asdasd")
+        .then((res) => console.log("res", res));
+    }
+    getItmes();
+  }, []);
+
   return (
     <>
       <main className="shop container border-2 border-blue-400 flex flex-row-reverse flex-wrap mb-20">

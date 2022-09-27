@@ -10,6 +10,7 @@ import Signup from "./components/Pages/Signup";
 import Cart from "./components/Pages/Cart";
 import PasswordForget from "./components/Pages/PasswordForget";
 import ResetPasswordWithPhone from "./components/Pages/ResetPasswordWithPhone";
+import Verify from "./components/Pages/Verify";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/resetpassword" element={<PasswordForget />} />
+          <Route path="/verify" element={<Verify />} />
           <Route
             path="/resetpassword/resetWithPhone"
             element={<ResetPasswordWithPhone />}

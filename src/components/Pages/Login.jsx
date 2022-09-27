@@ -1,7 +1,61 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import axios from "../../api/axios";
 import footerLogo from "../../assets/photos/footer-logo.png";
+import { PencilIcon } from "@heroicons/react/solid";
 
 const Login = () => {
+  const initLoginValues = {
+    email: "",
+    password: "",
+    loginType: "normal",
+  };
+  const [loginValues, setLoginValues] = useState(initLoginValues);
+  const [notValid, setNotValid] = useState({
+    msg: "",
+    visible: false,
+  });
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    document.title = `تسجيل الدخول`;
+  });
+
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setLoginValues({ ...loginValues, [name]: value });
+    console.log("loginValues", loginValues);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios
+      .post("/auth/login", {
+        field: loginValues.email,
+        password: loginValues.password,
+        login_type: loginValues.loginType,
+      })
+      .then((res) => {
+        console.log(res);
+        setNotValid({
+          msg: "",
+          visible: false,
+        });
+        if (res.statusText === "OK") {
+          window.location = "/";
+        }
+      })
+      .catch((err) => {
+        let errorMessage = err.response.data.message;
+        if (errorMessage === "These credentials do not match our records.") {
+          setNotValid({
+            msg: "خطأ في البريد الالكتروني او كلمة المرور",
+            visible: true,
+          });
+        }
+      });
+  };
+
   return (
     <>
       <section className="login container my-20 p-4">
@@ -18,20 +72,34 @@ const Login = () => {
             </p>
             <form
               action=""
+              onSubmit={handleSubmit}
               className="flex flex-col gap-2 text-right container mb-10"
             >
+              <p
+                id=""
+                className={`${
+                  notValid.visible ? "flex" : "hidden"
+                } flex-row-reverse bg-red-300 rounded-lg p-2 text-red-700 text-sm border-[1px] border-red-700`}
+              >
+                <PencilIcon className="h-5 w-5 mx-2" />
+                {notValid.msg}
+              </p>
               <input
                 type="email"
-                name=""
+                name="email"
                 id=""
                 placeholder="البريد الالكتروني"
+                value={loginValues.email}
+                onChange={handleLoginChange}
                 className="mb-2 rounded-xl p-4 text-right drop-shadow"
               />
               <input
                 type="password"
-                name=""
+                name="password"
                 id=""
                 placeholder="كلمة السر"
+                value={loginValues.password}
+                onChange={handleLoginChange}
                 className="mb-7 rounded-xl p-4 text-right drop-shadow"
               />
               <p className="font-AlmaraiBold text-sm lg:text-md text-center lg:text-right mb-5">
@@ -48,6 +116,7 @@ const Login = () => {
               <input
                 type="submit"
                 value="تسجيل الدخول"
+                onClick={handleSubmit}
                 className="font-AlmaraiBold bg-red-100 py-3 px-4 basis-1/2 rounded-2xl pt"
               />
             </form>
